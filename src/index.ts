@@ -63,7 +63,7 @@ app.delete("/api/notes/:id", async (req, res) => {
   }
 
   try {
-    prisma.note.delete({
+    await prisma.note.delete({
       where: { id } 
     })
     res.status(204).send(); // 204 - No Content status 
