@@ -54,6 +54,24 @@ app.put("/api/notes/:id", async (req, res) => {
   }
 });
 
+// delete note
+app.delete("/api/notes/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if (!id || isNaN(id)) {
+    return res.status(400).send("ID must be a valid number");
+  }
+
+  try {
+    prisma.note.delete({
+      where: { id } 
+    })
+    res.status(204).send(); // 204 - No Content status 
+  } catch (error) {
+    res.status(500).send("Oops, something went wrong!");
+  }
+});
+
 app.listen(5001, () => {
   console.log("server running on localhost:5001");
 });
