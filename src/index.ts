@@ -3,7 +3,7 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 
 const app = express();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); //modern data access layer 
 
 app.use(express.json());
 app.use(cors());
@@ -26,7 +26,31 @@ app.post("/api/notes", async (req, res) => {
     });
     res.json(note);
   } catch (error) {
-    res.status(500).send("Oops something went wrong!");
+    res.status(500).send("Oops, something went wrong!");
+  }
+});
+
+// update note
+app.put("/api/notes/:id", async (req, res) => {
+  const { title, content } = req.body;
+  const id = parseInt(req.params.id);
+
+  if(!title || !content){
+    return res.status(400).send("title and content fields are required");
+  }
+
+  if (!id || isNaN(id)) {
+    return res.status(400).send("ID must be a valid number");
+  }
+
+  try {
+    const updatedNote = await prisma.note.update({
+      where: { id },
+      data: { title, content },
+    });
+    res.json(updatedNote);
+  } catch (error) {
+    res.status(500).send("Oops, something went wrong!");
   }
 });
 
